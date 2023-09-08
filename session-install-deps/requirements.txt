@@ -1,0 +1,16 @@
+chromadb
+gradio
+langchain
+typing-inspect==0.8.0
+typing_extensions==4.5.0
+tiktoken 
+pypdf 
+faiss-gpu
+transformers 
+InstructorEmbedding 
+sentence_transformers==2.2.2
+accelerate 
+bitsandbytes 
+xformers 
+einops
+pysqlite3-binary
