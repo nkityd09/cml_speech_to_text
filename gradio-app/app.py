@@ -3,6 +3,9 @@ import torch
 import gradio as gr
 from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
+from langchain.chains import LLMChain
+from langchain.llms import HuggingFacePipeline
+from langchain.prompts import PromptTemplate
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -37,6 +40,8 @@ pipe = pipeline(
     device=device,
 )
 
+
+
 ## Updated Code
 hugging_face_model = "eachadea/vicuna-7b-1.1"
 
@@ -44,7 +49,7 @@ tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
 
 llm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", #meta-llama/Llama-2-13b-chat-hf
                                                      load_in_8bit=True,
-                                                     device_map='auto',
+                                                     device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
                                                      low_cpu_mem_usage=True,
                                                      token=access_token
@@ -63,35 +68,39 @@ llm_pipeline = pipeline(
     repetition_penalty=1.15
 )
 
-llm = HuggingFacePipeline(pipeline=llm_pipeline)
+text_llm = HuggingFacePipeline(pipeline=llm_pipeline)
 
 # Prompt Template for Langchain
-template = """You are a helpful AI assistant and provide the answer for the question based on the given context.
+template = """You are a helpful AI assistant and provide a detailed summary for the given context which are meeting notes. Divide your response into a Summary, Key takeaways and Action Items.
 Context:{context}
->>QUESTION<<{question}
->>ANSWER<<"""
-QA_CHAIN_PROMPT = PromptTemplate.from_template(template)
+>>Summary<<"""
+prompt_template = PromptTemplate(input_variables=["context"], template = template)
 
-  
 
-def chain(query, retriever):
-    """
-    Executes a retrieval-based question-answering chain with specified query and retriever.
+text_chain = LLMChain(llm=text_llm, prompt=prompt_template)
 
-    Args:
-    - query (str): The query/question to be answered.
-    - retriever (Retriever): The retriever object responsible for fetching relevant documents.
 
-    Returns:
-    - dict: Response from the RetrievalQA.
-    """
-    qa_chain = RetrievalQA.from_chain_type(llm=llm, 
-                                       chain_type="stuff", 
-                                       retriever=set_retriver(retriever), 
-                                       return_source_documents=True,
-                                       chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
-                                       verbose=True)
-    return qa_chain(query)
+
+
+
+# def chain(query, retriever):
+#     """
+#     Executes a retrieval-based question-answering chain with specified query and retriever.
+
+#     Args:
+#     - query (str): The query/question to be answered.
+#     - retriever (Retriever): The retriever object responsible for fetching relevant documents.
+
+#     Returns:
+#     - dict: Response from the RetrievalQA.
+#     """
+#     qa_chain = RetrievalQA.from_chain_type(llm=llm, 
+#                                        chain_type="stuff", 
+#                                        retriever=set_retriver(retriever), 
+#                                        return_source_documents=True,
+#                                        chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
+#                                        verbose=True)
+#     return qa_chain(query)
 
 
 ##Updated Code###
@@ -102,10 +111,10 @@ def transcribe(inputs, task):
 
     text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
     ##Updated Code###
-    sum_text = llm_pipeline(f"Summarize the following meeting notes. I need to send them out to a wider audience detailing what was discussed in the meeting and what was decided as the next steps. {text} ", do_sample=False)
+    sum_text = text_chain(text)
     ##Updated Code###
-    print(sum_text)
-    return  sum_text
+    print(sum_text["text"])
+    return  sum_text['context'], sum_text["text"]
 
 
 demo = gr.Blocks()
@@ -128,7 +137,9 @@ file_transcribe = gr.Interface(
         gr.inputs.Audio(source="upload", type="filepath", optional=True, label="Audio file"),
         gr.inputs.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
     ],
-    outputs="text",
+    outputs=[
+        gr.outputs.Textbox(label="Transcribed Text using Whisper"),
+        gr.outputs.Textbox(label="Summarized Text using Llama-2")],
     layout="horizontal",
     theme="huggingface",
     allow_flagging="never",
