@@ -1,17 +1,18 @@
 name: Cloudera
 
 entries:
-  - title: LLM PDF Document Chatbot
-    label: intelligent-writing-assistance
+  - title: Speech To Text on CML
+    label: speech-to-text-summarization
     short_description: A demonstration of how CML can host LLM models using HuggingFace and Gradio
     long_description: >-
-      The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. The application is built using the RAG architecture with an in-memory Chroma Database
+      The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. The application is built using OpenAI Whisper
     image_path: >-
       https://raw.githubusercontent.com/nkityd09/cml_chatbot/blob/main/images/meta-llama.png
     tags:
       - LLM
+      - Whisper
       - HuggingFace
       - Gradio
       - PyTorch
-    git_url: "https://github.com/nkityd09/cml_chatbot.git"
+    git_url: "https://github.com/nkityd09/cml_speech_to_text.git"
     is_prototype: true    
