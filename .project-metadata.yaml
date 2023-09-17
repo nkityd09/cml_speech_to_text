@@ -8,15 +8,15 @@ prototype_version: 1.0
 date: "2023-07-21"
 
 environment_variables:
-  VectorDB_IP:
+  HF_TOKEN:
     default: ""
     description: >-
-      Provide IP of Chroma DB
+      Provide HuggingFace Token for Llama-2
 
 runtimes:
   - editor: JupyterLab
     kernel: Python 3.9
-    edition: Nvidia GPU
+    edition: Nvidia GPU # Change to S2T runtime
 
 tasks:
   - type: run_session
