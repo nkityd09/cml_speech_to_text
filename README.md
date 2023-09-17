@@ -23,7 +23,7 @@ The AMP Application has been configured to use the following
 
 3. Provide the following URL and click "Add Source"
 ```
-https://raw.githubusercontent.com/nkityd09/cml_chatbot/main/catalog.yaml
+https://raw.githubusercontent.com/nkityd09/cml_speech_to_text/main/catalog.yaml
 ```
 
 4. Once added, We will be able to see the LLM PDF Document Chatbot in the AMP section and deploy it from there.
@@ -35,4 +35,9 @@ https://raw.githubusercontent.com/nkityd09/cml_chatbot/main/catalog.yaml
 
 ## Steps to launch the AMP
 
-# WIP
+## WIP
+
+## App In Action
+<img width="1308" alt="Speech_To_Text_App" src="https://github.com/nkityd09/cml_speech_to_text/assets/101132317/1693222c-0cbc-4838-b115-72991fd19a5e">
+
+
