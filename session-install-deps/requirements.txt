@@ -14,3 +14,4 @@ bitsandbytes
 xformers 
 einops
 pysqlite3-binary
+bitsandbytes
