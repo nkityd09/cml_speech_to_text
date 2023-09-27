@@ -7,7 +7,7 @@ entries:
     long_description: >-
       The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. The application is built using OpenAI Whisper
     image_path: >-
-      https://raw.githubusercontent.com/nkityd09/cml_chatbot/blob/main/images/meta-llama.png
+      https://github.com/nkityd09/cml_speech_to_text/blob/main/images/whisper.png?raw=true
     tags:
       - LLM
       - Whisper
