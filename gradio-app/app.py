@@ -43,7 +43,7 @@ pipe = pipeline(
 
 
 ## Updated Code
-hugging_face_model = "eachadea/vicuna-7b-1.1"
+hugging_face_model = "meta-llama/Llama-2-7b-chat-hf"
 
 tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
 
@@ -56,7 +56,7 @@ llm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf"
                                                     )
 max_len = 4096
 llm_task = "text-generation"
-T = 0
+T = 0.1
 
 llm_pipeline = pipeline(
     task=llm_task,
@@ -71,7 +71,7 @@ llm_pipeline = pipeline(
 text_llm = HuggingFacePipeline(pipeline=llm_pipeline)
 
 # Prompt Template for Langchain
-template = """You are a helpful AI assistant and provide a detailed summary for the given context which are meeting notes. Divide your response into a Summary, Key takeaways and Action Items.
+template = """You are a helpful AI assistant, please provide a detailed summary for the given context which are meeting notes. Divide your response into a Summary, Key takeaways and Action Items.
 Context:{context}
 >>Summary<<"""
 prompt_template = PromptTemplate(input_variables=["context"], template = template)
@@ -113,8 +113,9 @@ def transcribe(inputs, task):
     ##Updated Code###
     sum_text = text_chain(text)
     ##Updated Code###
-    print(sum_text["text"])
-    return  sum_text['context'], sum_text["text"]
+    # print(sum_text["context"])
+    # print(sum_text["text"])
+    return sum_text['context'], sum_text['text']
 
 
 demo = gr.Blocks()
@@ -123,7 +124,8 @@ mf_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
         gr.inputs.Audio(source="microphone", type="filepath", optional=True),
-        gr.inputs.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
+        gr.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
+        #gr.inputs.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
     ],
     outputs="text",
     layout="horizontal",
@@ -135,11 +137,9 @@ file_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
         gr.inputs.Audio(source="upload", type="filepath", optional=True, label="Audio file"),
-        gr.inputs.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
+        gr.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
     ],
-    outputs=[
-        gr.outputs.Textbox(label="Transcribed Text using Whisper"),
-        gr.outputs.Textbox(label="Summarized Text using Llama-2")],
+    outputs=[gr.Textbox(label="Transcribed Text using Whisper"), gr.Textbox(label="Summarized Text using Llama-2")],
     layout="horizontal",
     theme="huggingface",
     allow_flagging="never",
