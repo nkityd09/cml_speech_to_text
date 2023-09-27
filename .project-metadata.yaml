@@ -8,13 +8,11 @@ prototype_version: 1.0
 date: "2023-09-27"
 
 environment_variables:
-  VectorDB_IP:
+  - VectorDB_IP:
     default: ""
     description: >-
       Provide IP of Chroma DB
-
-environment_variables:
-  HF_TOKEN:
+  - HF_TOKEN:
     default: ""
     description: >-
       Provide HF_TOKEN for Meta Llama-2 Model
