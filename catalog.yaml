@@ -36,7 +36,7 @@ entries:
     long_description: >-
       The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. The application is built using CodeLLama and can assists in writing Code
     image_path: >-
-      https://github.com/nkityd09/cml_chatbot/blob/main/images/QandA.png?raw=true
+      https://github.com/nkityd09/cml_code_assistant/blob/main/images/coder.png?raw=true
     tags:
       - CodeLlama
       - LLM
