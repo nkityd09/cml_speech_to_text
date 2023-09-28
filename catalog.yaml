@@ -9,7 +9,7 @@ entries:
     image_path: >-
       https://github.com/nkityd09/cml_speech_to_text/blob/main/images/whisper.png?raw=true
     tags:
-      - LLM
+      - ProServ
       - Whisper
       - HuggingFace
       - Gradio
@@ -24,8 +24,8 @@ entries:
     image_path: >-
       https://github.com/nkityd09/cml_chatbot/blob/main/images/QandA.png?raw=true
     tags:
+      - ProServ
       - LLM
-      - HuggingFace
       - Gradio
       - PyTorch
     git_url: "https://github.com/nkityd09/cml_chatbot.git"
@@ -38,8 +38,8 @@ entries:
     image_path: >-
       https://github.com/nkityd09/cml_code_assistant/blob/main/images/coder.png?raw=true
     tags:
+      - ProServ
       - CodeLlama
-      - LLM
       - Gradio
       - PyTorch
     git_url: "https://github.com/nkityd09/cml_code_assistant.git"
