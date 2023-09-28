@@ -30,7 +30,7 @@ entries:
       - PyTorch
     git_url: "https://github.com/nkityd09/cml_chatbot.git"
     is_prototype: true
-  - title: ProServ Coder
+  - title: CML Code Assistant
     label: code-assistance-chatbot
     short_description: A demonstration of how CML can host LLM models using HuggingFace and Gradio
     long_description: >-
