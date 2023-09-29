@@ -1,7 +1,7 @@
 name: Cloudera
 
 entries:
-  - title: Speech To Text on CML
+  - title: Speech To Text Summarization
     label: speech-to-text-summarization
     short_description: A demonstration of how CML can host LLM models using HuggingFace and Gradio
     long_description: >-
@@ -30,7 +30,7 @@ entries:
       - PyTorch
     git_url: "https://github.com/nkityd09/cml_chatbot.git"
     is_prototype: true
-  - title: CML Code Assistant
+  - title: Code Assistant
     label: code-assistance-chatbot
     short_description: A demonstration of how CML can host LLM models using HuggingFace and Gradio
     long_description: >-
