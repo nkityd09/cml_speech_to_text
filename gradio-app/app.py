@@ -32,7 +32,7 @@ access_token = os.environ["HF_TOKEN"]
 
 
 device = 0 if torch.cuda.is_available() else "cpu"
-
+a
 pipe = pipeline(
     task="automatic-speech-recognition",
     model=MODEL_NAME,
@@ -48,13 +48,13 @@ hugging_face_model = "meta-llama/Llama-2-7b-chat-hf"
 tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
 
 llm_model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf", #meta-llama/Llama-2-13b-chat-hf
-                                                     load_in_8bit=True,
+                                                     load_in_4bit=True,
                                                      device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
                                                      low_cpu_mem_usage=True,
                                                      token=access_token
                                                     )
-max_len = 4096
+max_len = 8192
 llm_task = "text-generation"
 T = 0.1
 
@@ -82,17 +82,30 @@ text_chain = LLMChain(llm=text_llm, prompt=prompt_template)
 
 
 
-prompt_template = """Write a summary of the following with separate sections for Key Takeaways and Action Items:
+# prompt_template = """Write a three part report of the following Text divided into Detailed Summary, Key Takeaways and Action Items:
 
 
-"{text}"
+# "{text}"
 
 
-CONCISE SUMMARY:"""
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
+# CONCISE SUMMARY:"""
+# PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
 
-summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , combine_prompt=PROMPT, verbose=True)
+map_prompt_template = """Write a concise summary of the following text delimited by triple backquotes.
+Return your response in bullet points which covers the key points of the text.
+```{text}```
+BULLET POINT SUMMARY:"""
+MAP_PROMPT = PromptTemplate(template=map_prompt_template, input_variables=["text"])
 
+
+combine_prompt_template = """You will be given a series of summaries from a meeting. The summaries will be enclosed in triple backticks (```)
+Your goal is to give a detailed summary of what happened in the meeting.
+The reader should be able to grasp what happened in the meeting.
+```{text}```
+VERBOSE SUMMARY:"""
+COMBINE_PROMPT = PromptTemplate(template=combine_prompt_template, input_variables=["text"])
+
+summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
 
 
 
