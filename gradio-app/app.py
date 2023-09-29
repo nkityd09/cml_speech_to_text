@@ -32,7 +32,7 @@ access_token = os.environ["HF_TOKEN"]
 
 
 device = 0 if torch.cuda.is_available() else "cpu"
-a
+
 pipe = pipeline(
     task="automatic-speech-recognition",
     model=MODEL_NAME,
