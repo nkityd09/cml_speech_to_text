@@ -8,10 +8,6 @@ prototype_version: 1.0
 date: "2023-09-27"
 
 environment_variables:
-  VectorDB_IP:
-    default: ""
-    description: >-
-      Provide IP of Chroma DB
   HF_TOKEN:
     default: ""
     description: >-
@@ -57,7 +53,7 @@ tasks:
     memory: 16
 
   - type: start_application
-    name: CML LLM Chatbot
+    name: Speech To Text App
     subdomain: cmlllm
     script: gradio-app/app.py
     short_summary: Start CML LLM Chatbot application
