@@ -1,24 +1,24 @@
 import torch
-
+from langchain.prompts import PromptTemplate
 import gradio as gr
 from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
 from langchain.chains import LLMChain
 from langchain.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
-
+from langchain.chains.summarize import load_summarize_chain
 import warnings
 warnings.filterwarnings("ignore")
-
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 import textwrap
-
+import langchain
 import torch
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import LlamaTokenizer, LlamaForCausalLM, pipeline
 from InstructorEmbedding import INSTRUCTOR
-
+langchain.verbose = True
 import tempfile
 import os
 print(os.environ['PATH'])
@@ -82,28 +82,19 @@ text_chain = LLMChain(llm=text_llm, prompt=prompt_template)
 
 
 
-
-# def chain(query, retriever):
-#     """
-#     Executes a retrieval-based question-answering chain with specified query and retriever.
-
-#     Args:
-#     - query (str): The query/question to be answered.
-#     - retriever (Retriever): The retriever object responsible for fetching relevant documents.
-
-#     Returns:
-#     - dict: Response from the RetrievalQA.
-#     """
-#     qa_chain = RetrievalQA.from_chain_type(llm=llm, 
-#                                        chain_type="stuff", 
-#                                        retriever=set_retriver(retriever), 
-#                                        return_source_documents=True,
-#                                        chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
-#                                        verbose=True)
-#     return qa_chain(query)
+prompt_template = """Write a summary of the following with separate sections for Key Takeaways and Action Items:
 
 
-##Updated Code###
+"{text}"
+
+
+CONCISE SUMMARY:"""
+PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
+
+summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , combine_prompt=PROMPT, verbose=True)
+
+
+
 
 def transcribe(inputs, task):
     if inputs is None:
@@ -111,11 +102,12 @@ def transcribe(inputs, task):
 
     text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
     ##Updated Code###
-    sum_text = text_chain(text)
-    ##Updated Code###
-    # print(sum_text["context"])
-    # print(sum_text["text"])
-    return sum_text['context'], sum_text['text']
+
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
+    docs = text_splitter.create_documents([text])
+    output = summary_chain(docs)
+    summary = output["output_text"]
+    return text, summary
 
 
 demo = gr.Blocks()
