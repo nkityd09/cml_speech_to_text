@@ -105,8 +105,26 @@ The reader should be able to grasp what happened in the meeting.
 VERBOSE SUMMARY:"""
 COMBINE_PROMPT = PromptTemplate(template=combine_prompt_template, input_variables=["text"])
 
-summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
+# summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
 
+
+def transcribe_summarize(inputs, task, m_prompt, c_prompt):
+    if inputs is None:
+        raise gr.Error("No audio file submitted! Please upload or record an audio file before submitting your request.")
+
+    text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
+    ##Updated Code###
+
+    MAP_PROMPT = PromptTemplate(template=m_prompt, input_variables=["text"])
+    COMBINE_PROMPT = PromptTemplate(template=c_prompt, input_variables=["text"])
+    summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
+    
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
+    
+    docs = text_splitter.create_documents([text])
+    output = summary_chain(docs)
+    summary = output["output_text"]
+    return text, summary
 
 
 def transcribe(inputs, task):
@@ -114,45 +132,45 @@ def transcribe(inputs, task):
         raise gr.Error("No audio file submitted! Please upload or record an audio file before submitting your request.")
 
     text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
-    ##Updated Code###
 
+    return text
+
+
+def summarize(text, m_prompt, c_prompt):
+    MAP_PROMPT = PromptTemplate(template=m_prompt, input_variables=["text"])
+    COMBINE_PROMPT = PromptTemplate(template=c_prompt, input_variables=["text"])
+    summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
     docs = text_splitter.create_documents([text])
     output = summary_chain(docs)
     summary = output["output_text"]
-    return text, summary
+    return summary
 
 
-demo = gr.Blocks()
-
-mf_transcribe = gr.Interface(
-    fn=transcribe,
-    inputs=[
-        gr.inputs.Audio(source="microphone", type="filepath", optional=True),
-        gr.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
-        #gr.inputs.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
-    ],
-    outputs="text",
-    layout="horizontal",
-    theme="huggingface",
-    allow_flagging="never",
-)
-
-file_transcribe = gr.Interface(
-    fn=transcribe,
-    inputs=[
-        gr.inputs.Audio(source="upload", type="filepath", optional=True, label="Audio file"),
-        gr.Radio(["transcribe", "translate"], label="Task", default="transcribe"),
-    ],
-    outputs=[gr.Textbox(label="Transcribed Text using Whisper"), gr.Textbox(label="Summarized Text using Llama-2")],
-    layout="horizontal",
-    theme="huggingface",
-    allow_flagging="never",
-)
-
-
-with demo:
-    gr.TabbedInterface([file_transcribe, mf_transcribe], ["Audio file","Microphone"])
+with gr.Blocks() as demo:
+    gr.Markdown("# Whisper Speech to Text")
+    with gr.Row():
+        audio_file = gr.Audio(source="upload", type="filepath", label="Audio file")
+        transcribed_text = gr.Textbox(label="Text from Whisper", show_copy_button=True)
+    with gr.Row():
+        task = gr.Radio(["transcribe", "translate"], default="transcribe", label="Task")
+        transcribe_button = gr.Button("Transcribe")
+        ts_button = gr.Button("Transcribe & Summarize")
+    gr.Markdown("# ")
+    gr.Markdown("# Llama-2 ")
+    with gr.Row():
+        with gr.Column(scale=1):
+            summary_button = gr.Button("Generate Summary")
+        with gr.Column(scale=3):
+            summarized_text = gr.Textbox(label="Summarized Text", show_copy_button=True)
+    with gr.Accordion("Advanced Options", open=False):
+        with gr.Row():
+            map_prompt_ui = gr.Textbox(label="Map Prompt", interactive=True, show_copy_button=True, value=map_prompt_template, lines=5)
+            combine_prompt_ui = gr.Textbox(label="Combine Prompt", interactive=True, show_copy_button=True, value=combine_prompt_template, lines=5)
+    
+    transcribe_button_submit = transcribe_button.click(fn=transcribe, inputs=[audio_file, task], outputs=[transcribed_text])
+    summarize_button_submit = summary_button.click(fn=summarize, inputs=[transcribed_text, map_prompt_ui, combine_prompt_ui ], outputs=[summarized_text])
+    all_button_submit = ts_button.click(fn=transcribe_summarize, inputs=[audio_file, task, map_prompt_ui, combine_prompt_ui], outputs=[transcribed_text, summarized_text])
 
 if __name__ == "__main__":
     demo.launch(share=True,
