@@ -21,6 +21,8 @@ from InstructorEmbedding import INSTRUCTOR
 langchain.verbose = True
 import tempfile
 import os
+import pandas as pd
+from datetime import datetime
 print(os.environ['PATH'])
 
 MODEL_NAME = "openai/whisper-large-v2"
@@ -80,17 +82,6 @@ prompt_template = PromptTemplate(input_variables=["context"], template = templat
 text_chain = LLMChain(llm=text_llm, prompt=prompt_template)
 
 
-
-
-# prompt_template = """Write a three part report of the following Text divided into Detailed Summary, Key Takeaways and Action Items:
-
-
-# "{text}"
-
-
-# CONCISE SUMMARY:"""
-# PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
-
 map_prompt_template = """Write a concise summary of the following text delimited by triple backquotes.
 Return your response in bullet points which covers the key points of the text.
 ```{text}```
@@ -108,6 +99,21 @@ COMBINE_PROMPT = PromptTemplate(template=combine_prompt_template, input_variable
 # summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
 
 
+columns = ['Time', 'Map_Prompt', 'Combine_Prompt', 'Summary']
+logging_df = pd.DataFrame(columns=columns)
+
+def logging(df, datetime, map_prompt, combine_prompt, summary):
+    new_row = {
+        'Time': datetime,
+        'Map_Prompt': map_prompt,
+        'Combine_Prompt': combine_prompt,
+        'Summary': summary
+    }
+    df.loc[len(df)] = new_row
+    df.to_csv("/home/cdsw/prompt_log/prompt_log.csv")
+    return df
+
+
 def transcribe_summarize(inputs, task, m_prompt, c_prompt):
     if inputs is None:
         raise gr.Error("No audio file submitted! Please upload or record an audio file before submitting your request.")
@@ -117,14 +123,15 @@ def transcribe_summarize(inputs, task, m_prompt, c_prompt):
 
     MAP_PROMPT = PromptTemplate(template=m_prompt, input_variables=["text"])
     COMBINE_PROMPT = PromptTemplate(template=c_prompt, input_variables=["text"])
-    summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True , map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
+    summary_chain = load_summarize_chain(llm=text_llm, chain_type="map_reduce", return_intermediate_steps=True, map_prompt=MAP_PROMPT,combine_prompt=COMBINE_PROMPT,token_max=8192 ,verbose=True)
     
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
     
     docs = text_splitter.create_documents([text])
     output = summary_chain(docs)
     summary = output["output_text"]
-    return text, summary
+    log_df = logging(logging_df, datetime.now(), m_prompt, c_prompt, summary)
+    return text, summary, log_df
 
 
 def transcribe(inputs, task):
@@ -144,7 +151,8 @@ def summarize(text, m_prompt, c_prompt):
     docs = text_splitter.create_documents([text])
     output = summary_chain(docs)
     summary = output["output_text"]
-    return summary
+    log_df = logging(logging_df, datetime.now(), m_prompt, c_prompt, summary)
+    return summary, log_df
 
 
 with gr.Blocks() as demo:
@@ -167,10 +175,12 @@ with gr.Blocks() as demo:
         with gr.Row():
             map_prompt_ui = gr.Textbox(label="Map Prompt", interactive=True, show_copy_button=True, value=map_prompt_template, lines=5)
             combine_prompt_ui = gr.Textbox(label="Combine Prompt", interactive=True, show_copy_button=True, value=combine_prompt_template, lines=5)
-    
+    with gr.Accordion("Prompt Log", open=False):
+        log_df_ui = gr.DataFrame(wrap=True)
+        
     transcribe_button_submit = transcribe_button.click(fn=transcribe, inputs=[audio_file, task], outputs=[transcribed_text])
-    summarize_button_submit = summary_button.click(fn=summarize, inputs=[transcribed_text, map_prompt_ui, combine_prompt_ui ], outputs=[summarized_text])
-    all_button_submit = ts_button.click(fn=transcribe_summarize, inputs=[audio_file, task, map_prompt_ui, combine_prompt_ui], outputs=[transcribed_text, summarized_text])
+    summarize_button_submit = summary_button.click(fn=summarize, inputs=[transcribed_text, map_prompt_ui, combine_prompt_ui ], outputs=[summarized_text, log_df_ui])
+    all_button_submit = ts_button.click(fn=transcribe_summarize, inputs=[audio_file, task, map_prompt_ui, combine_prompt_ui], outputs=[transcribed_text, summarized_text, log_df_ui])
 
 if __name__ == "__main__":
     demo.launch(share=True,
