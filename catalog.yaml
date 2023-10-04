@@ -30,17 +30,3 @@ entries:
       - PyTorch
     git_url: "https://github.com/nkityd09/cml_chatbot.git"
     is_prototype: true
-  - title: Code Assistant
-    label: code-assistance-chatbot
-    short_description: A demonstration of how CML can host LLM models using HuggingFace and Gradio
-    long_description: >-
-      The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. The application is built using CodeLLama and can assists in writing Code
-    image_path: >-
-      https://github.com/nkityd09/cml_code_assistant/blob/main/images/coder.png?raw=true
-    tags:
-      - ProServ
-      - CodeLlama
-      - Gradio
-      - PyTorch
-    git_url: "https://github.com/nkityd09/cml_code_assistant.git"
-    is_prototype: true               
