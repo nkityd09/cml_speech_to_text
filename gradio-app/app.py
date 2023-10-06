@@ -29,7 +29,7 @@ print(os.environ['PATH'])
 
 
 ####################
-#Whisper
+#Setting Up Whisper
 ####################
 
 MODEL_NAME = "openai/whisper-large-v2"
@@ -47,13 +47,13 @@ pipe = pipeline(
 )
 
 ####################
-#Llama2
+#Setting Up Llama2
 ####################
 #TODO:FIX Test with different models
 access_token = os.environ["HF_TOKEN"]
 !huggingface-cli login --token $HF_TOKEN
 
-hugging_face_model = "meta-llama/Llama-2-7b-chat-hf"
+hugging_face_model = os.environ["HF_MODEL"]
 #hugging_face_model = "mistralai/Mistral-7B-Instruct-v0.1"
 
 tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
@@ -92,7 +92,7 @@ prompt_template = PromptTemplate(input_variables=["context"], template = templat
 text_chain = LLMChain(llm=text_llm, prompt=prompt_template)
 
 #####################
-#Langchain Prompts
+#Setting Up Langchain 
 #####################
 
 map_prompt_template = """Write a concise summary of the following text delimited by triple backquotes.
@@ -228,24 +228,14 @@ with gr.Blocks() as demo:
             summarized_text = gr.Textbox(label="Summarized Text", show_copy_button=True)
     with gr.Accordion("Advanced Options", open=False):
         with gr.Row():
-            map_prompt_ui = gr.Textbox(label="Map Prompt", 
-                                       interactive=True, 
-                                       show_copy_button=True, 
-                                       value=map_prompt_template, 
-                                       lines=5, 
-                                       info="Use {text} to pass transcribed text")
-            combine_prompt_ui = gr.Textbox(label="Combine Prompt", 
-                                           interactive=True, 
-                                           show_copy_button=True, 
-                                           value=combine_prompt_template, 
-                                           lines=5, 
-                                           info="Use {text} to pass combined text")
+            map_prompt_ui = gr.Textbox(label="Map Prompt", interactive=True, show_copy_button=True, value=map_prompt_template, lines=5)
+            combine_prompt_ui = gr.Textbox(label="Combine Prompt", interactive=True, show_copy_button=True, value=combine_prompt_template, lines=5)
         with gr.Row():
             chunk_size = gr.Textbox(label="Chunk Size", show_copy_button=True, interactive=True, value=4000)
             chunk_overlap = gr.Textbox(label="Chunk Overlap", show_copy_button=True, interactive=True, value=100)
         with gr.Accordion("Prompt Log", open=False):
             with gr.Row():    
-                log_df_ui = gr.DataFrame(wrap=True, height=5)
+                log_df_ui = gr.DataFrame(wrap=True)
  
     transcribe_button_submit = transcribe_button.click(fn=transcribe, 
                                                        inputs=[audio_file, task], 

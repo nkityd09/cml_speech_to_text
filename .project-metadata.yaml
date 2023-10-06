@@ -8,10 +8,14 @@ prototype_version: 1.0
 date: "2023-09-27"
 
 environment_variables:
+  HF_MODEL:
+    default: "meta-llama/Llama-2-7b-chat-hf"
+    description: >-
+      Provide HuggingFace Model you want to use
   HF_TOKEN:
     default: ""
     description: >-
-      Provide HF_TOKEN for Meta Llama-2 Model
+      Provide HuggingFace Token for Gated Models
 
 runtimes:
   - editor: JupyterLab
