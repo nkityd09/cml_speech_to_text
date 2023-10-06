@@ -51,7 +51,7 @@ pipe = pipeline(
 ####################
 #TODO:FIX Test with different models
 access_token = os.environ["HF_TOKEN"]
-!huggingface-cli login --token $HF_TOKEN
+
 
 hugging_face_model = os.environ["HF_MODEL"]
 #hugging_face_model = "mistralai/Mistral-7B-Instruct-v0.1"
@@ -63,7 +63,7 @@ llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, #meta-llama
                                                      device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
                                                      low_cpu_mem_usage=True,
-                                                     token=access_token
+                                                     use_auth_token=access_token
                                                     )
 max_len = 8192
 llm_task = "text-generation"
@@ -124,7 +124,7 @@ else:
 def logging(df, datetime, latency, chunk_size, chunk_overlap, map_prompt, combine_prompt, summary):
     new_row = {
         'Time': datetime,
-        'Latency': latency,
+        'Latency': latency, #TODO:FIX Latency Column not getting populated
         'Chunk_Size': chunk_size, 
         'Chunk_Overlap': chunk_overlap,
         'Map_Prompt': map_prompt,
