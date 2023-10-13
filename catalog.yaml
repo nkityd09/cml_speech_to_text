@@ -31,7 +31,7 @@ entries:
     git_url: "https://github.com/nkityd09/cml_chatbot.git"
     is_prototype: true
   - title: CML IDEFICS LMM
-    label: large-multimodal-model
+    label: intelligent-writing-assistance
     short_description: A demonstration of how CML can host LMM Models using HuggingFace and Gradio
     long_description: >-
       The goal of this application is to demonstrate how the a Open Source LMM model can be deployed on CML. The application is built using the IDEFICS LMM provided by HuggingFace
