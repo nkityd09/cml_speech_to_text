@@ -36,7 +36,7 @@ entries:
     long_description: >-
       The goal of this application is to demonstrate how the a Open Source LMM model can be deployed on CML. The application is built using the IDEFICS LMM provided by HuggingFace
     image_path: >-
-      https://github.com/nkityd09/cml_idefics/blob/main/images/OpenFlamingo.png?raw=true
+      https://github.com/nkityd09/cml_idefics/blob/main/images/OpenFlamingo_updated.png?raw=true
     tags:
       - ProServ
       - LMM
