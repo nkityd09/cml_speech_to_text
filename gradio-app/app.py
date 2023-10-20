@@ -19,7 +19,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import LlamaTokenizer, LlamaForCausalLM, pipeline
 from InstructorEmbedding import INSTRUCTOR
 langchain.verbose = True
-import tempfile
+from huggingface_hub import login
 import os
 import pandas as pd
 from datetime import datetime
@@ -52,18 +52,19 @@ pipe = pipeline(
 #TODO:FIX Test with different models
 access_token = os.environ["HF_TOKEN"]
 
+if access_token:
+    login(token=access_token)
 
 hugging_face_model = os.environ["HF_MODEL"]
 #hugging_face_model = "mistralai/Mistral-7B-Instruct-v0.1"
 
-tokenizer = AutoTokenizer.from_pretrained(hugging_face_model, use_auth_token=access_token)
+tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
 
 llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, #meta-llama/Llama-2-13b-chat-hf
                                                      load_in_4bit=True,
                                                      device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
-                                                     low_cpu_mem_usage=True,
-                                                     use_auth_token=access_token
+                                                     low_cpu_mem_usage=True                                                     
                                                     )
 max_len = 8192
 llm_task = "text-generation"
