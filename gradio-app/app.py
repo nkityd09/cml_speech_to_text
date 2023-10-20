@@ -56,11 +56,11 @@ if access_token:
     login(token=access_token)
 
 hugging_face_model = os.environ["HF_MODEL"]
-#hugging_face_model = "mistralai/Mistral-7B-Instruct-v0.1"
+print(hugging_face_model)
 
 tokenizer = AutoTokenizer.from_pretrained(hugging_face_model)
 
-llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, #meta-llama/Llama-2-13b-chat-hf
+llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, 
                                                      load_in_4bit=True,
                                                      device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
