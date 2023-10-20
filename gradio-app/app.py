@@ -195,10 +195,11 @@ def summarize(text, m_prompt, c_prompt, chunk_size, chunk_overlap):
                                          verbose=True)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=100)
     docs = text_splitter.create_documents([text])
-    start_time = time.time()
+    start = time.time()
     output = summary_chain(docs)
-    end_time = time.time()
-    runtime = end_time - start_time
+    end = time.time()
+    runtime = end - start
+    
     
     summary = output["output_text"]
     log_df = logging(logging_df, datetime.now(), round(runtime, 2), chunk_size, chunk_overlap, m_prompt, c_prompt, summary)
