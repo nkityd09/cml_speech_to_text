@@ -1,3 +1,4 @@
+torch==2.0.1
 chromadb
 gradio
 langchain
@@ -8,7 +9,7 @@ pypdf
 faiss-gpu
 transformers 
 InstructorEmbedding 
-sentence_transformers==2.2.2
+#sentence_transformers==2.2.2
 accelerate 
 bitsandbytes 
 xformers 
@@ -16,3 +17,5 @@ einops
 pysqlite3-binary
 bitsandbytes
 nltk
+pandas==2.1.1
+git+https://github.com/UKPLab/sentence-transformers.git
