@@ -60,13 +60,14 @@ print(hugging_face_model)
 
 tokenizer = AutoTokenizer.from_pretrained(hugging_face_model, use_auth_token=access_token)
 
-llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, 
+llm_model = AutoModelForCausalLM.from_pretrained(hugging_face_model, #meta-llama/Llama-2-13b-chat-hf
                                                      load_in_4bit=True,
                                                      device_map='balanced_low_0',
                                                      torch_dtype=torch.float16,
                                                      low_cpu_mem_usage=True,
-                                                     use_auth_token=access_token                                                   
+                                                     use_auth_token=access_token
                                                     )
+
 max_len = 8192
 llm_task = "text-generation"
 T = 0.1
