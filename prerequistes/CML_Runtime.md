@@ -4,7 +4,7 @@ OpenAI Whisper requires the **ffmpeg** package to be installed for Speech to Tex
 
 ## Navigate to the Runtime Catalog of your CML Workspace
 
-![Add Runtime](images/runtime_catalog.png)
+![Add Runtime](../images/runtime_catalog.png)
 
 ## Add the following Docker Image for Speech To Text
 ```
