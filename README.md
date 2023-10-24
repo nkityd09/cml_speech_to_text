@@ -33,7 +33,7 @@ https://raw.githubusercontent.com/nkityd09/cml_speech_to_text/main/catalog.yaml
 5. Click on the AMP and "Configure Project"
    - Add HuggingFace Model Name, defaults to meta-llama/Llama-2-7b-chat-hf
    - If accessing a gated model, add HuggingFace token. Can be left blank for non gated models
-[Configuring AMP](images/configuring_amp.png)
+![Configuring AMP](images/configuring_amp.png)
 
 6. Once the AMP steps are completed, We can access the Gradio UI via the Applications page.
 
@@ -42,11 +42,11 @@ https://raw.githubusercontent.com/nkityd09/cml_speech_to_text/main/catalog.yaml
 The CML Application serves a Gradio UI to upload Audio files and summarize the text transcribed from the Audio.
 
 1. The Gradio UI provides an upload widget which can be used to upload Audio files
-   [Application UI](images/application_ui.png)
+   ![Application UI](images/application_ui.png)
 2. Once the file has been uploaded, we can either Transcribe the audio file or Transcribe and Summarize its text.
-   [Application run](images/application_run.png)
+   ![Application run](images/application_run.png)
 3. The default prompts are set for summarizing meeting notes but can be changed from the **Advanced Options** section
-   [Advanced Options](images/advanced_options.png)
+   ![Advanced Options](images/advanced_options.png)
 
 
 
