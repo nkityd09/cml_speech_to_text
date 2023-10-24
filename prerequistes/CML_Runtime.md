@@ -20,7 +20,3 @@ registry.hub.docker.com/ankit09/cml_speech_2_text:latest
 ## Verify the Runtime in CML
 
 ![Verify Runtime](../images/verify_runtime.png)
-
-
-Click on Add to Catalog
-
