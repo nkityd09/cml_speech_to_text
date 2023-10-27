@@ -11,20 +11,20 @@ import warnings
 warnings.filterwarnings("ignore")
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
-import textwrap
+
 import langchain
 import torch
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from transformers import LlamaTokenizer, LlamaForCausalLM, pipeline
-from InstructorEmbedding import INSTRUCTOR
+from transformers import pipeline
+
 langchain.verbose = True
 from huggingface_hub import login
 import os
 import pandas as pd
 from datetime import datetime
 import time
-print(os.environ['PATH'])
+
 
 
 
@@ -224,7 +224,7 @@ with gr.Blocks() as demo:
         transcribe_button = gr.Button("Transcribe")
         ts_button = gr.Button("Transcribe & Summarize")
     gr.Markdown("# ")
-    gr.Markdown("# Llama-2 ")
+    gr.Markdown("# LLM Model ")
     with gr.Row():
         with gr.Column(scale=1):
             summary_button = gr.Button("Generate Summary")
