@@ -5,11 +5,9 @@ from transformers import pipeline
 from transformers.pipelines.audio_utils import ffmpeg_read
 from langchain.chains import LLMChain
 from langchain.llms import HuggingFacePipeline
-from langchain.prompts import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 import warnings
 warnings.filterwarnings("ignore")
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 
 import langchain
@@ -49,7 +47,6 @@ pipe = pipeline(
 ####################
 #Setting Up Llama2
 ####################
-#TODO:FIX Test with different models
 access_token = os.environ["HF_TOKEN"]
 
 if access_token:
@@ -127,7 +124,7 @@ else:
 def logging(df, datetime, latency, chunk_size, chunk_overlap, map_prompt, combine_prompt, summary):
     new_row = {
         'Time': datetime,
-        'Latency': latency, #TODO:FIX Latency Column not getting populated
+        'Latency(s)': latency, 
         'Chunk_Size': chunk_size, 
         'Chunk_Overlap': chunk_overlap,
         'Map_Prompt': map_prompt,
@@ -141,8 +138,6 @@ def logging(df, datetime, latency, chunk_size, chunk_overlap, map_prompt, combin
 ##########################
 #Setting Up Prompt Logging
 ##########################    
-
-
 
 def transcribe_summarize(inputs, task, m_prompt, c_prompt, chunk_size, chunk_overlap):
     if inputs is None:
