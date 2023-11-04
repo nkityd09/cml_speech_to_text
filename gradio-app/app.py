@@ -15,7 +15,7 @@ import torch
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import pipeline
-
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 langchain.verbose = True
 from huggingface_hub import login
 import os
