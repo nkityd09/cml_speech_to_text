@@ -6,6 +6,7 @@ AMP demonstrating Speech to Text Summarization on CML using OpenAI Whisper
 - Summarize transcribed Text using Llama-2 (can be changed during AMP deployment) and LangChain
 - Customizable Prompts for various summarization use cases
 - Prompt Log for monitoring and tracking how different prompts perform. Log gets stored in CSV which can be used as data for fine tuning downstream.
+- Custom Runtime Setup with ffmpeg package
 
 
 ## Prerequistes
