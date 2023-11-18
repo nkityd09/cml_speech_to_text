@@ -43,3 +43,18 @@ entries:
       - Gradio
     git_url: "https://github.com/nkityd09/cml_idefics.git"
     is_prototype: true
+  - title: CML HuggingFace Models
+    label: large-language-models
+    short_description: A demonstration of how CML can host LLM models using HuggingFace
+    long_description: >-
+      The goal of this application is to demonstrate how the a Open Source LLM model can be deployed on CML. 
+    image_path: >-
+      https://github.com/nkityd09/cml_hf_models/blob/main/images/Hugging_Face_Logo.png?raw=true
+    tags:
+      - ProServ
+      - LLM
+      - Streamlit
+      - HuggingFace
+    git_url: "https://github.com/nkityd09/cml_hf_models.git" 
+    is_prototype: true
+    
