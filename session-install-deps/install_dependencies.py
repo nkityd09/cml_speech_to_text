@@ -1,1 +1,1 @@
-!pip install -r session-install-deps/requirements.txt
+!pip install -r session-install-deps/requirements.txt --upgrade
